@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transfr AI Tools</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #f8f9fa;
+            --bg-secondary: #ffffff;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --border-color: #dee2e6;
+            --upload-bg: #f8f9fa;
+            --upload-hover: #f1f3f5;
+            --upload-dragover: #e7f1ff;
+            --result-bg: #f8f9fa;
+            --accent-color: #0d6efd;
+            --accent-hover: #0b5ed7;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1e1e2e;
+            --bg-secondary: #282838;
+            --text-primary: #e2e2e2;
+            --text-secondary: #a0a0a0;
+            --border-color: #3d3d4d;
+            --upload-bg: #2a2a3a;
+            --upload-hover: #32323f;
+            --upload-dragover: #3a3a48;
+            --result-bg: #2a2a3a;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --error-bg: #442626;
+            --error-border: #dc2626;
+            --error-text: #fecaca;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            min-height: 100vh;
+            padding: 20px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .main-container {
+            background-color: var(--bg-secondary);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px var(--shadow-color);
+            padding: 2rem;
+            margin: 2rem auto;
+            width: 80%;
+            transition: all 0.3s ease;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .header h1 {
+            color: var(--accent-color);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+
+        .form-group select, .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 1rem;
+            line-height: 1.5;
+            font-family: inherit;
+        }
+
+        .form-group select:focus, .form-group input:focus, .form-group textarea:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+
+        .nav-tabs {
+            border-bottom-color: var(--border-color);
+        }
+
+        .nav-tabs .nav-link {
+            color: var(--text-primary);
+            background: transparent;
+            border: none;
+            padding: 1rem 2rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tabs .nav-link:hover {
+            color: var(--accent-color);
+            border-color: transparent;
+        }
+
+        .nav-tabs .nav-link.active {
+            background-color: var(--bg-secondary);
+            color: var(--accent-color);
+            border-color: var(--border-color) var(--border-color) var(--bg-secondary);
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            display: block;
+            width: 100%;
+            margin-top: 1rem;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-align: center;
+            color: #fff;
+            background-color: var(--accent-color);
+            border: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+        }
+
+        #loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+            padding: 2rem;
+            background-color: var(--upload-bg);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: var(--accent-color);
+        }
+
+        .result-container {
+            background-color: var(--result-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+            border: 1px solid var(--border-color);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        .result-container pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            max-width: 100%;
+            margin: 0;
+            font-family: inherit;
+            font-size: inherit;
+        }
+
+        .error-message {
+            background-color: var(--error-bg);
+            border: 1px solid var(--error-border);
+            color: var(--error-text);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 0.75rem;
+            border-radius: 12px;
+            width: 46px;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px var(--shadow-color);
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--upload-hover);
+            transform: translateY(-2px);
+        }
+
+        .form-check-input {
+            background-color: var(--upload-bg);
+            border-color: var(--border-color);
+        }
+
+        .form-check-input:checked {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .file-upload {
+            position: relative;
+            width: 100%;
+            min-height: 200px;
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            background-color: var(--bg-secondary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            margin: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload:hover, .file-upload.dragover {
+            border-color: var(--accent-color);
+            background-color: var(--upload-dragover);
+        }
+
+        .file-upload-input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .file-upload-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload-button:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        .file-upload-button i {
+            font-size: 1.25rem;
+        }
+
+        .file-name {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        .file-info {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-align: center;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" id="themeToggle">
+        <i class="bi bi-sun-fill"></i>
+    </button>
+
+    <div class="main-container">
+        <div class="header">
+            <h1><i class="bi bi-braces"></i> Transfr AI Tools</h1>
+            <p class="text-muted">Curriculum Mapping & File Analysis</p>
+        </div>
+        
+        <!-- Navigation Tabs -->
+        <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="curriculum-tab" data-bs-toggle="tab" data-bs-target="#curriculum" type="button" role="tab">
+                    <i class="bi bi-book"></i> Curriculum Mapping
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="analysis-tab" data-bs-toggle="tab" data-bs-target="#analysis" type="button" role="tab">
+                    <i class="bi bi-file-earmark-text"></i> File Analysis
+                </button>
+            </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="myTabContent">
+            <!-- Curriculum Mapping Tab -->
+            <div class="tab-pane fade show active" id="curriculum" role="tabpanel">
+                <form id="curriculum-form" action="{{ url_for('map_curriculum') }}" method="post" enctype="multipart/form-data">
+                    <!-- Include dropdowns -->
+                    {% include 'dropdowns.html' %}
+
+                    <div class="form-group">
+                        <label for="course_outline">Course Outline:</label>
+                        <div class="file-upload" id="fileUpload">
+                            <input type="file" 
+                                   class="file-upload-input" 
+                                   name="course_outline" 
+                                   id="course_outline" 
+                                   required>
+                            <div class="file-upload-button">
+                                <i class="bi bi-cloud-upload"></i>
+                                Choose File
+                            </div>
+                            <div class="file-info">Supported formats: CSV, Excel (XLSX), TXT, PDF</div>
+                            <div class="file-info">Maximum file size: 16MB</div>
+                            <div class="file-name" id="fileName">No file chosen</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="relevant_standards">Relevant Standards (Optional):</label>
+                        <textarea class="form-control" name="relevant_standards" id="relevant_standards" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="special_requests">Special Requests (Optional):</label>
+                        <textarea class="form-control" name="special_requests" id="special_requests" rows="3"></textarea>
+                    </div>
+
+                    <button type="button" class="btn btn-secondary" id="estimate-tokens">Estimate Tokens</button>
+
+                    <div id="token-estimates" style="margin-top: 1rem; display: none;">
+                        <p>Token Estimates:</p>
+                        <ul>
+                            <li>Product Catalog: <span id="catalog-tokens"></span></li>
+                            <li>OSHA Standards: <span id="standards-tokens"></span></li>
+                            <li>Course Outline: <span id="outline-tokens"></span></li>
+                            <li>Full Prompt: <span id="prompt-tokens"></span></li>
+                        </ul>
+                    </div>
+
+                    <script>
+                        document.getElementById('estimate-tokens').addEventListener('click', async function() {
+                            const formData = new FormData(document.getElementById('curriculum-form'));
+                            const response = await fetch('/estimate-tokens', {
+                                method: 'POST',
+                                body: formData
+                            });
+                            const data = await response.json();
+                            document.getElementById('catalog-tokens').textContent = data.catalog_tokens;
+                            document.getElementById('standards-tokens').textContent = data.standards_tokens;
+                            document.getElementById('outline-tokens').textContent = data.outline_tokens;
+                            document.getElementById('prompt-tokens').textContent = data.prompt_tokens;
+                            document.getElementById('token-estimates').style.display = 'block';
+
+                            // Display full prompt
+                            const promptDisplay = document.createElement('pre');
+                            promptDisplay.textContent = data.full_prompt;
+                            document.getElementById('token-estimates').appendChild(promptDisplay);
+                        });
+                    </script>
+
+                    <button type="submit" class="btn btn-primary">Generate Curriculum Map</button>
+                </form>
+            </div>
+
+            <!-- File Analysis Tab -->
+            <div class="tab-pane fade" id="analysis" role="tabpanel">
+                <form id="analysis-form" action="{{ url_for('analyze') }}" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="file">Upload File:</label>
+                        <div class="file-upload" id="analysisFileUpload">
+                            <input type="file" 
+                                   class="file-upload-input" 
+                                   name="file" 
+                                   id="file" 
+                                   required>
+                            <div class="file-upload-button">
+                                <i class="bi bi-cloud-upload"></i>
+                                Choose File
+                            </div>
+                            <div class="file-info">Supported formats: CSV, Excel (XLSX), TXT, PDF</div>
+                            <div class="file-info">Maximum file size: 16MB</div>
+                            <div class="file-name" id="analysisFileName">No file chosen</div>
+                        </div>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="use_local_llm" name="use_local_llm">
+                        <label class="form-check-label" for="use_local_llm">Use Local LLM (Ollama)</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Analyze File</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loading">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Processing your request...</p>
+        </div>
+
+        <!-- Results Container -->
+        <div id="result" class="result-container" style="display: none;"></div>
+    </div>
+
+    <script>
+        // Theme functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = themeToggle.querySelector('i');
+
+            // Set initial theme
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+
+            // Theme toggle click handler
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+
+            function updateThemeIcon(theme) {
+                themeIcon.className = theme === 'dark' ? 'bi bi-moon-fill' : 'bi bi-sun-fill';
+            }
+
+            // Initialize Bootstrap tooltips
+            const tooltips = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            tooltips.forEach(el => new bootstrap.Tooltip(el));
+        });
+
+        // Form submission handling
+        document.getElementById('curriculum-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const form = this;
+            const resultDiv = document.getElementById('result');
+            const loading = document.getElementById('loading');
+
+            try {
+                loading.style.display = 'block';
+                resultDiv.style.display = 'none';
+
+                const formData = new FormData(form);
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                resultDiv.innerHTML = `<pre>${data.result}</pre>`;
+                resultDiv.style.display = 'block';
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error-message">${error.message}</div>`;
+                resultDiv.style.display = 'block';
+            } finally {
+                loading.style.display = 'none';
+            }
+        });
+
+        document.getElementById('analysis-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const form = this;
+            const resultDiv = document.getElementById('result');
+            const loading = document.getElementById('loading');
+
+            try {
+                loading.style.display = 'block';
+                resultDiv.style.display = 'none';
+
+                const formData = new FormData(form);
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                resultDiv.innerHTML = `<pre>${data.analysis}</pre>`;
+                resultDiv.style.display = 'block';
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error-message">${error.message}</div>`;
+                resultDiv.style.display = 'block';
+            } finally {
+                loading.style.display = 'none';
+            }
+        });
+
+        // Check Ollama status on page load
+        window.addEventListener('load', async function() {
+            if (document.getElementById('use_local_llm')) {
+                try {
+                    const response = await fetch('/check-ollama-status');
+                    const data = await response.json();
+                    
+                    const checkbox = document.getElementById('use_local_llm');
+                    if (!data.is_online || !data.has_model) {
+                        checkbox.disabled = true;
+                        checkbox.checked = false;
+                        checkbox.title = data.message;
+                    }
+                } catch (error) {
+                    console.error('Error checking Ollama status:', error);
+                }
+            }
+        });
+
+        // File upload handling
+        document.addEventListener('DOMContentLoaded', function() {
+            function setupFileUpload(uploadId, inputId, fileNameId) {
+                const fileUpload = document.getElementById(uploadId);
+                const fileInput = document.getElementById(inputId);
+                const fileName = document.getElementById(fileNameId);
+
+                if (!fileUpload || !fileInput || !fileName) return;
+
+                // File selection handler
+                fileInput.addEventListener('change', function(e) {
+                    if (this.files && this.files[0]) {
+                        fileName.textContent = this.files[0].name;
+                    } else {
+                        fileName.textContent = 'No file chosen';
+                    }
+                });
+
+                // Drag and drop handlers
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    fileUpload.addEventListener(eventName, preventDefaults, false);
+                });
+
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    fileUpload.addEventListener(eventName, () => highlight(fileUpload), false);
+                });
+
+                ['dragleave', 'drop'].forEach(eventName => {
+                    fileUpload.addEventListener(eventName, () => unhighlight(fileUpload), false);
+                });
+
+                fileUpload.addEventListener('drop', (e) => handleDrop(e, fileInput, fileName), false);
+            }
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            function highlight(element) {
+                element.classList.add('dragover');
+            }
+
+            function unhighlight(element) {
+                element.classList.remove('dragover');
+            }
+
+            function handleDrop(e, input, nameElement) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                input.files = files;
+                
+                if (files && files[0]) {
+                    nameElement.textContent = files[0].name;
+                }
+            }
+
+            // Setup both file upload areas
+            setupFileUpload('fileUpload', 'course_outline', 'fileName');
+            setupFileUpload('analysisFileUpload', 'file', 'analysisFileName');
+        });
+    </script>
+</body>
+</html>
