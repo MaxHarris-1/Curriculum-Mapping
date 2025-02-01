@@ -1,0 +1,86 @@
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+}
+
+.container {
+    width: 100%;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.output-container {
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+    padding: 1.5rem;
+    border-radius: 5px;
+    margin-top: 20px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: monospace;
+    line-height: 1.6;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+    width: 100%;
+}
+
+textarea, input[type="file"] {
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.simulation-item {
+    margin-bottom: 1.5rem;
+    padding-left: 1.5rem;
+}
+
+.simulation-title {
+    font-weight: bold;
+    color: #569cd6;
+    margin-bottom: 0.5rem;
+}
+
+.simulation-description {
+    margin-left: 1.5rem;
+    color: #d4d4d4;
+    margin-bottom: 0.5rem;
+}
+
+.simulation-duration {
+    color: #ce9178;
+    margin-left: 1.5rem;
+}
+
+.section-header {
+    color: #569cd6;
+    font-weight: bold;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.total-stats {
+    margin-top: 2rem;
+    padding: 1rem;
+    background-color: #2d2d2d;
+    border-radius: 5px;
+}
+
+.bold {
+    font-weight: bold;
+    color: #569cd6;
+} 
